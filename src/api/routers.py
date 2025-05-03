@@ -36,7 +36,7 @@ def select_region_and_cluster_for_places(
     district: str = Query(..., description="시군구명"),
     neighborhood: str = Query(..., description="읍면동명"),
     cluster_id: int = Query(..., description="상황 클러스터 ID"),
-    uc=Depends(get_places_by_region_and_cluster),
+    get_places=Depends(get_places_by_region_and_cluster),
 ):
     places = uc(district, neighborhood, cluster_id)
     if not places:
