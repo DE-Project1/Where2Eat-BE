@@ -1,16 +1,24 @@
-FROM python:3.11-slim-bookworm AS base
-FROM base AS builder
-COPY --from=ghcr.io/astral-sh/uv:0.4.9 /uv /bin/uv
-ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+# ─── Builder Stage ───────────────────────────────────────────────
+FROM ghcr.io/astral-sh/uv:debian-slim AS builder  # uv가 Python 포함
 WORKDIR /app
-COPY uv.lock pyproject.toml /app/
-RUN --mount=type=cache,target=/root/.cache/uv \
-  uv sync --frozen --no-install-project --no-dev
-COPY . /app
-RUN --mount=type=cache,target=/root/.cache/uv \
-  uv sync --frozen --no-dev
-FROM base
+
+# 종속성 설치(캐시 레이어)
+COPY pyproject.toml uv.lock . 
+RUN uv sync --frozen --no-cache
+
+# 애플리케이션 코드 추가
+COPY . .
+
+# ─── Runtime Stage ──────────────────────────────────────────────
+FROM python:3.11-slim
+WORKDIR /app
+
+# 빌더에서 설치된 .venv와 코드만 복사
 COPY --from=builder /app /app
-ENV PATH="/src/.venv/bin:$PATH"
+
+# .venv/bin을 PATH에 추가
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# FastAPI 서버 실행
 EXPOSE 8000
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
