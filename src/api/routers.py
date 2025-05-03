@@ -18,7 +18,7 @@ router = APIRouter(prefix="/regions", tags=["regions"])
 def select_region_for_clusters(
     district: str = Query(..., description="시군구명"),
     neighborhood: str = Query(..., description="읍면동명"),
-    uc=Depends(get_clusters_by_region),
+    get_clusters=Depends(get_clusters_by_region),
 ):
     clusters = uc(district, neighborhood)
     if not clusters:
@@ -36,7 +36,7 @@ def select_region_and_cluster_for_places(
     district: str = Query(..., description="시군구명"),
     neighborhood: str = Query(..., description="읍면동명"),
     cluster_id: int = Query(..., description="상황 클러스터 ID"),
-    uc=Depends(get_places_by_region_and_cluster),
+    get_places=Depends(get_places_by_region_and_cluster),
 ):
     places = uc(district, neighborhood, cluster_id)
     if not places:
@@ -53,7 +53,7 @@ def select_region_and_cluster_for_places(
 def get_situation_definitions_of_place(
     place_id: int,
     page: int = Query(1, ge=1, description="페이지 번호 (1부터 시작)"),
-    uc=Depends(get_situation_definitions_by_place_id),
+    get_situation_definitions=Depends(get_situation_definitions_by_place_id),
 ):
     results = uc(place_id, page)
     # 페이지에 결과가 없더라도 빈 리스트 반환
