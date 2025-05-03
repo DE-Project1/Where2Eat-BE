@@ -20,7 +20,7 @@ def select_region_for_clusters(
     neighborhood: str = Query(..., description="읍면동명"),
     get_clusters=Depends(get_clusters_by_region),
 ):
-    clusters = uc(district, neighborhood)
+    clusters = get_clusters(district, neighborhood)
     if not clusters:
         raise HTTPException(status_code=404, detail="No clusters found")
     return clusters
@@ -38,7 +38,7 @@ def select_region_and_cluster_for_places(
     cluster_id: int = Query(..., description="상황 클러스터 ID"),
     get_places=Depends(get_places_by_region_and_cluster),
 ):
-    places = uc(district, neighborhood, cluster_id)
+    places = get_places(district, neighborhood, cluster_id)
     if not places:
         raise HTTPException(status_code=404, detail="No places found")
     return places
@@ -55,6 +55,6 @@ def get_situation_definitions_of_place(
     page: int = Query(1, ge=1, description="페이지 번호 (1부터 시작)"),
     get_situation_definitions=Depends(get_situation_definitions_by_place_id),
 ):
-    results = uc(place_id, page)
+    results = get_situation_definitions(place_id, page)
     # 페이지에 결과가 없더라도 빈 리스트 반환
     return results
