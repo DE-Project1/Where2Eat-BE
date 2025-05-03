@@ -1,9 +1,9 @@
 # ─── Builder Stage ───────────────────────────────────────────────
-FROM ghcr.io/astral-sh/uv:debian-slim AS builder  # uv가 Python 포함
+FROM ghcr.io/astral-sh/uv:debian-slim AS builder
 WORKDIR /app
 
 # 종속성 설치(캐시 레이어)
-COPY pyproject.toml uv.lock . 
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-cache
 
 # 애플리케이션 코드 추가
