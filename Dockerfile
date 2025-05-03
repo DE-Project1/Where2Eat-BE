@@ -17,7 +17,7 @@ WORKDIR /app
 COPY --from=builder /app /app
 
 # .venv/bin을 PATH에 추가
-ENV PATH="/app/.venv/bin:${PATH}"
+ENV PATH="./.venv/bin:${PATH}"
 
 # FastAPI 서버 실행
 EXPOSE 8000
