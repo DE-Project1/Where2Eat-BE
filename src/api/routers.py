@@ -18,7 +18,7 @@ router = APIRouter(prefix="/regions", tags=["regions"])
 def select_region_for_clusters(
     district: str = Query(..., description="시군구명"),
     neighborhood: str = Query(..., description="읍면동명"),
-    uc=Depends(get_clusters_by_region),
+    get_clusters=Depends(get_clusters_by_region),
 ):
     clusters = uc(district, neighborhood)
     if not clusters:
