@@ -53,7 +53,7 @@ def select_region_and_cluster_for_places(
 def get_situation_definitions_of_place(
     place_id: int,
     page: int = Query(1, ge=1, description="페이지 번호 (1부터 시작)"),
-    uc=Depends(get_situation_definitions_by_place_id),
+    get_situation_definitions=Depends(get_situation_definitions_by_place_id),
 ):
     results = uc(place_id, page)
     # 페이지에 결과가 없더라도 빈 리스트 반환
