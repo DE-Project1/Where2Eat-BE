@@ -23,13 +23,13 @@ client = TestClient(app)
 def override_dependencies():
     # clusters용 더미 의존성: 항상 1개짜리 리스트 반환
     def fake_get_clusters():
-        return lambda district, neighborhood: [
+        return lambda district: [
             {"cluster_id": 1, "cluster_name": "테스트 클러스터", "places_count": 3}
         ]
 
     # places용 더미 의존성: 항상 1개짜리 리스트 반환
     def fake_get_places():
-        return lambda district, neighborhood, cluster_id: [
+        return lambda district, cluster_id: [
             {
                 "place_id": 10,
                 "adm_dong_code": 1111051500,
@@ -59,7 +59,7 @@ def override_dependencies():
 
 
 def test_get_clusters_success():
-    r = client.get("/regions/clusters?district=종로구&neighborhood=청운효자동")
+    r = client.get("/regions/clusters?district=종로구")
     assert r.status_code == 200
     assert r.json() == [
         {"cluster_id": 1, "cluster_name": "테스트 클러스터", "places_count": 3}
@@ -69,12 +69,12 @@ def test_get_clusters_success():
 def test_get_clusters_not_found():
     # 빈 리스트 반환하도록 의존성만 교체
     app.dependency_overrides[get_clusters_by_region] = lambda: (lambda d, n: [])
-    r = client.get("/regions/clusters?district=없음구&neighborhood=없음동")
+    r = client.get("/regions/clusters?district=없음구")
     assert r.status_code == 404
 
 
 def test_get_places_success():
-    r = client.get("/regions/places?district=종로구&neighborhood=청운효자동&cluster_id=1")
+    r = client.get("/regions/places?district=종로구&cluster_id=1")
     assert r.status_code == 200
     data = r.json()
     assert isinstance(data, list) and data[0]["place_id"] == 10

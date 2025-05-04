@@ -13,14 +13,13 @@ router = APIRouter(prefix="/regions", tags=["regions"])
     "/clusters",
     response_model=List[ClusterDTO],
     summary="행정구역별 상황 클러스터 리스트 조회",
-    description="district(시군구명)와 neighborhood(읍면동명)을 받아, 해당 지역에 속한 상황 클러스터 목록을 반환합니다."
+    description="district을 받아, 해당 지역에 속한 상황 클러스터 목록을 반환합니다."
 )
 def select_region_for_clusters(
     district: str = Query(..., description="시군구명"),
-    neighborhood: str = Query(..., description="읍면동명"),
     get_clusters=Depends(get_clusters_by_region),
 ):
-    clusters = get_clusters(district, neighborhood)
+    clusters = get_clusters(district)
     if not clusters:
         raise HTTPException(status_code=404, detail="No clusters found")
     return clusters
@@ -30,15 +29,14 @@ def select_region_for_clusters(
     "/places",
     response_model=List[PlaceDTO],
     summary="클러스터별 장소 리스트 조회",
-    description="district, neighborhood, cluster_id를 받아, 해당 클러스터에 속한 장소 목록을 반환합니다."
+    description="district, cluster_id를 받아, 해당 클러스터에 속한 장소 목록을 반환합니다."
 )
 def select_region_and_cluster_for_places(
     district: str = Query(..., description="시군구명"),
-    neighborhood: str = Query(..., description="읍면동명"),
     cluster_id: int = Query(..., description="상황 클러스터 ID"),
     get_places=Depends(get_places_by_region_and_cluster),
 ):
-    places = get_places(district, neighborhood, cluster_id)
+    places = get_places(district, cluster_id)
     if not places:
         raise HTTPException(status_code=404, detail="No places found")
     return places
@@ -58,3 +56,39 @@ def get_situation_definitions_of_place(
     results = get_situation_definitions(place_id, page)
     # 페이지에 결과가 없더라도 빈 리스트 반환
     return results
+
+
+
+# @router.get(
+#     "/clusters",
+#     response_model=List[ClusterDTO],
+#     summary="행정구역별 상황 클러스터 리스트 조회",
+#     description="district(시군구명)와 neighborhood(읍면동명)을 받아, 해당 지역에 속한 상황 클러스터 목록을 반환합니다."
+# )
+# def select_region_for_clusters(
+#     district: str = Query(..., description="시군구명"),
+#     neighborhood: str = Query(..., description="읍면동명"),
+#     get_clusters=Depends(get_clusters_by_region),
+# ):
+#     clusters = get_clusters(district, neighborhood)
+#     if not clusters:
+#         raise HTTPException(status_code=404, detail="No clusters found")
+#     return clusters
+#
+#
+# @router.get(
+#     "/places",
+#     response_model=List[PlaceDTO],
+#     summary="클러스터별 장소 리스트 조회",
+#     description="district, neighborhood, cluster_id를 받아, 해당 클러스터에 속한 장소 목록을 반환합니다."
+# )
+# def select_region_and_cluster_for_places(
+#     district: str = Query(..., description="시군구명"),
+#     neighborhood: str = Query(..., description="읍면동명"),
+#     cluster_id: int = Query(..., description="상황 클러스터 ID"),
+#     get_places=Depends(get_places_by_region_and_cluster),
+# ):
+#     places = get_places(district, neighborhood, cluster_id)
+#     if not places:
+#         raise HTTPException(status_code=404, detail="No places found")
+#     return places

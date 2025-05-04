@@ -1,7 +1,7 @@
 # src/application/dtos.py
 
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional
 
 class ClusterDTO(BaseModel):
     cluster_id: int = Field(..., description="클러스터 ID")
