@@ -5,7 +5,7 @@ from src.main import app
 
 client = TestClient(app)
 
-# 현재 tests 폴더의 한 단계 위(프로젝트 루트)를 PYTHONPATH에 추가
+# 현재 test 폴더의 한 단계 위(프로젝트 루트)를 PYTHONPATH에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pytest
