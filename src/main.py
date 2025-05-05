@@ -8,7 +8,7 @@ app = FastAPI(title="Where2Eat BE")
 origins = [
     "http://localhost:3000", "http://localhost:3001",
     "http://localhost:5173", "http://localhost:5174",
-    "http://localhost:8000", "https://resonant-klepon-d71b43.netlify.app"
+    "http://localhost:8000", "https://scintillating-sable-e44ff7.netlify.app"
 ]
 
 app.add_middleware(
